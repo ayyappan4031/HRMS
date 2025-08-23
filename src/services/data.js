@@ -1,5 +1,4 @@
 const getEmployees = async () => {
-  // Simulate fetching data from an API
   return [
     {
       employeeId: "001",
@@ -85,7 +84,6 @@ const getEmployees = async () => {
       role: "Marketing Manager",
       status: "Inactive",
     },
-    // Add more employee records as needed
   ];
 };
 

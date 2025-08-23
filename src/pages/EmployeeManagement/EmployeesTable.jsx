@@ -16,13 +16,15 @@ const EmployeesTable = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
+  const getData = async () => {
+    const employees = await getEmployees();
+    seData(employees);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const employees = await getEmployees();
-      seData(employees);
-    };
-    fetchData();
-  });
+    getData();
+  }, []);
 
   const columns = [
     {
