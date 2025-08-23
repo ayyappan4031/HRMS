@@ -1,14 +1,4 @@
-import React from "react";
-import {
-  AppstoreOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, VideoCameraOutlined } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
 import EmployeeManagement from "../pages/EmployeeManagement/EmployeeManagement";
 import Navbar from "./Navbar";
@@ -63,7 +53,7 @@ const AppLayout = () => {
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Mini-HRMS ©{new Date().getFullYear()} Created by Hfactor
+          Mini-HRMS ©{new Date().getFullYear()}
         </Footer>
       </Layout>
     </Layout>

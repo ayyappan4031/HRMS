@@ -240,7 +240,7 @@ const UpdateEmployee = ({ employee, onClose }) => {
           size="large"
           className="w-full h-10 bg-theme"
         >
-          Create Employee
+          Update Employee
         </Button>
       </form>
     </>

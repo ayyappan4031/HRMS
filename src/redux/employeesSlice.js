@@ -1,51 +1,56 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getEmployees } from "../services/employeeService";
 
-const initialState = {
-  employees: [
-    {
-      employeeId: "001",
-      name: "John Doe",
-      email: "ayyappan@gmail.com",
-      joiningDate: "2022-01-15",
-      department: "Engineering",
-      role: "Software Engineer",
-      status: "Active",
-    },
-    {
-      employeeId: "002",
-      name: "John Doe",
-      email: "ayyappan@gmail.com",
-      doj: "2022-01-15",
-      department: "Engineering",
-      role: "Software Engineer",
-      status: "Active",
-    },
-  ],
-};
+// Async thunk for fetching employees
+export const fetchEmployees = createAsyncThunk(
+  "employees/fetchEmployees",
+  async () => {
+    const data = await getEmployees();
+    return data;
+  }
+);
 
 const employeesSlice = createSlice({
   name: "employees",
-  initialState,
+  initialState: {
+    employees: [],
+    loading: false,
+    error: null,
+  },
   reducers: {
     addEmployee: (state, action) => {
       state.employees.push(action.payload);
     },
+    deleteEmployee: (state, action) => {
+      state.employees = state.employees.filter(
+        (emp) => emp.employeeId !== action.payload
+      );
+    },
     updateEmployee: (state, action) => {
       const index = state.employees.findIndex(
-        (e) => e.employeeId === action.payload.employeeId
+        (emp) => emp.employeeId === action.payload.employeeId
       );
       if (index !== -1) {
         state.employees[index] = action.payload;
       }
     },
-    deleteEmployee: (state, action) => {
-      state.employees = state.employees.filter(
-        (e) => e.employeeId !== action.payload
-      );
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchEmployees.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchEmployees.fulfilled, (state, action) => {
+        state.loading = false;
+        state.employees = action.payload;
+      })
+      .addCase(fetchEmployees.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message;
+      });
   },
 });
 
-export const { addEmployee, updateEmployee, deleteEmployee } =
+export const { addEmployee, deleteEmployee, updateEmployee } =
   employeesSlice.actions;
 export default employeesSlice.reducer;

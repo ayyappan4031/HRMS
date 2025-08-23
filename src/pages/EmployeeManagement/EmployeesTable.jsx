@@ -1,13 +1,14 @@
-import { Modal, Table, message } from "antd";
-import React, { useState } from "react";
+import { Modal, Spin, Table, message } from "antd";
+import React, { useEffect, useState } from "react";
 import { FormOutlined, DeleteOutlined, UserOutlined } from "@ant-design/icons";
 import UpdateEmployee from "./UpdateEmployee";
 import ViewEmployee from "./ViewEmployee";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteEmployee } from "../../redux/employeesSlice";
+import { deleteEmployee, fetchEmployees } from "../../redux/employeesSlice";
 
 const EmployeesTable = () => {
-  const employees = useSelector((state) => state.employees.employees);
+  const { employees, loading } = useSelector((state) => state.employees);
+
   const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
@@ -18,6 +19,10 @@ const EmployeesTable = () => {
     setSelectedEmployee(employee);
     setIsEditModalOpen(true);
   };
+
+  useEffect(() => {
+    dispatch(fetchEmployees());
+  }, [dispatch]);
 
   const handleViewDetails = (employee) => {
     setSelectedEmployee(employee);
@@ -86,6 +91,7 @@ const EmployeesTable = () => {
         onCancel={handleCancel}
         title="Update Employee"
         footer={null}
+        centered
       >
         {selectedEmployee && (
           <UpdateEmployee employee={selectedEmployee} onClose={handleCancel} />
@@ -107,6 +113,7 @@ const EmployeesTable = () => {
         columns={columns}
         dataSource={employees}
         pagination={true}
+        loading={loading}
         rowKey="employeeId"
         scroll={{ x: 800, y: 300 }}
       />
