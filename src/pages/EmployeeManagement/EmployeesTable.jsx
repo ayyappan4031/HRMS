@@ -5,9 +5,11 @@ import UpdateEmployee from "./UpdateEmployee";
 import ViewEmployee from "./ViewEmployee";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEmployee, fetchEmployees } from "../../redux/employeesSlice";
+import Filters from "./Filters";
 
 const EmployeesTable = () => {
   const { employees, loading } = useSelector((state) => state.employees);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -19,6 +21,10 @@ const EmployeesTable = () => {
     setSelectedEmployee(employee);
     setIsEditModalOpen(true);
   };
+
+  const filteredEmployees = employees.filter((emp) =>
+    emp.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     dispatch(fetchEmployees());
@@ -53,7 +59,7 @@ const EmployeesTable = () => {
       width: 150,
       dataIndex: "name",
       key: "name",
-      sorter: true,
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: "Department",
@@ -108,10 +114,10 @@ const EmployeesTable = () => {
           <ViewEmployee employee={selectedEmployee} onClose={handleCancel} />
         )}
       </Modal>
-
+      <Filters onSearch={(query) => setSearchQuery(query)} />
       <Table
         columns={columns}
-        dataSource={employees}
+        dataSource={filteredEmployees}
         pagination={true}
         loading={loading}
         rowKey="employeeId"

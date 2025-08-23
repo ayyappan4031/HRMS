@@ -45,6 +45,7 @@ const UpdateEmployee = ({ employee, onClose }) => {
     dispatch(updateEmployee(updatedEmployee));
     messageApi.success("Employee updated successfully!");
     onClose();
+    reset();
   };
 
   return (
