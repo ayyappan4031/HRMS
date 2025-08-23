@@ -23,7 +23,7 @@ const Filters = ({ onSearch }) => {
         placeholder="Search by name"
         value={filters.name}
         onChange={handleChange}
-        className="w-64"
+        style={{ width: 200 }}
       />
       <Button type="primary" onClick={handleClear}>
         Clear
