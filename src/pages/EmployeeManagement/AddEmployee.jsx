@@ -1,10 +1,14 @@
 import { Button, Modal, Input, Select, DatePicker, message } from "antd";
-import React from "react";
+import { TeamOutlined } from "@ant-design/icons";
+import { useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { departmentList, rolesList } from "../../utils/constants";
 import dayjs from "dayjs";
+import { useDispatch } from "react-redux";
+import { addEmployee } from "../../redux/employeesSlice";
+import { v4 as uuidv4 } from "uuid";
 
 const addEmployeeSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -19,8 +23,10 @@ const addEmployeeSchema = z.object({
 });
 
 const AddEmployee = () => {
-  const [isModelOpen, setIsModalOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const [isModelOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+
   const {
     handleSubmit,
     control,
@@ -49,13 +55,15 @@ const AddEmployee = () => {
   };
   const onSubmit = (data) => {
     console.log("form submitted", data);
+    const newEmployee = { employeeId: uuidv4(), ...data };
+    dispatch(addEmployee(newEmployee));
     setIsModalOpen(false);
     reset();
     messageApi.success("Employee added successfully!");
   };
   return (
     <>
-      {/* antd messge render */}
+      {/* contextholder is used for antd toadst message renders */}
       {contextHolder}
       <Button type="primary" size="medium" onClick={onAddEmployee}>
         Add Employee
@@ -69,7 +77,7 @@ const AddEmployee = () => {
           <div className="flex items-center gap-3">
             <div className="p-2 bg-gray-50 rounded">
               <div className="w-6 h-6 flex items-center justify-center">
-                {/* <Building2 /> */}
+                <TeamOutlined style={{ fontSize: "28px" }} />
               </div>
             </div>
             <div>
@@ -268,6 +276,7 @@ const AddEmployee = () => {
           <Button
             type="primary"
             htmlType="submit"
+            size="large"
             className="w-full h-10 bg-theme"
           >
             Create Employee

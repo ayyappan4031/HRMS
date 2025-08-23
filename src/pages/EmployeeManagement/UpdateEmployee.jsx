@@ -1,10 +1,11 @@
 import { Button, Modal, Input, Select, DatePicker, message } from "antd";
-import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { updateEmployee } from "../../redux/employeesSlice";
+import dayjs from "dayjs";
+import { departmentList, rolesList } from "../../utils/constants";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Controller, useForm } from "react-hook-form";
-import { departmentList, rolesList } from "../../utils/constants";
-import dayjs from "dayjs";
 
 const addEmployeeSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -18,9 +19,10 @@ const addEmployeeSchema = z.object({
   }),
 });
 
-const AddEmployee = () => {
-  const [isModelOpen, setIsModalOpen] = React.useState(false);
+const UpdateEmployee = ({ employee, onClose }) => {
+  const dispatch = useDispatch();
   const [messageApi, contextHolder] = message.useMessage();
+
   const {
     handleSubmit,
     control,
@@ -29,253 +31,220 @@ const AddEmployee = () => {
   } = useForm({
     resolver: zodResolver(addEmployeeSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      joiningDate: "",
-      salary: "",
-      department: "",
-      role: "",
-      status: "Active",
+      name: employee.name || "",
+      email: employee.email || "",
+      joiningDate: employee.joiningDate || "",
+      department: employee.department || "",
+      role: employee.role || "",
+      status: employee.status || "Active",
     },
   });
 
-  const onAddEmployee = () => {
-    setIsModalOpen(true);
+  const onSubmit = (data) => {
+    const updatedEmployee = { ...employee, ...data };
+    dispatch(updateEmployee(updatedEmployee));
+    messageApi.success("Employee updated successfully!");
+    onClose();
   };
 
-  const onCancel = () => {
-    setIsModalOpen(false);
-    reset();
-  };
-  const onSubmit = (data) => {
-    console.log("form submitted", data);
-    setIsModalOpen(false);
-    reset();
-    messageApi.success("Employee added successfully!");
-  };
   return (
     <>
-      {/* antd messge render */}
       {contextHolder}
-      <Button type="primary" size="medium" onClick={onAddEmployee}>
-        Add Employee
-      </Button>
-      <Modal
-        centered={true}
-        open={isModelOpen}
-        onCancel={onCancel}
-        footer={null}
-        title={
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-gray-50 rounded">
-              <div className="w-6 h-6 flex items-center justify-center">
-                {/* <Building2 /> */}
-              </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-row">
+          <label className="text-sm font-medium mb-1 w-4/12">
+            Name<span className="text-red-500"> *</span>
+          </label>
+          <div className="w-full">
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  placeholder="e.g. Jane"
+                  status={errors.name ? "error" : ""}
+                  className="h-10"
+                />
+              )}
+            />
+            <div className="h-5">
+              <p className="text-sm text-red-500">{errors.name?.message}</p>
             </div>
-            <div>
-              <h3 className="text-lg font-semibold m-0">Add Employee</h3>
-              <p className="text-sm text-gray-500 m-0 font-normal">
-                Securely Add Employees and Define Roles.
+          </div>
+        </div>
+
+        {/* Email */}
+        <div className="flex flex-row">
+          <label className="text-sm font-medium mb-1 w-4/12">
+            Email ID<span className="text-red-500"> *</span>
+          </label>
+          <div className="w-full">
+            <Controller
+              name="email"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  placeholder="e.g. 123@example.com"
+                  status={errors.email ? "error" : ""}
+                  className="h-10"
+                />
+              )}
+            />
+            <div className="h-5">
+              <p className="text-sm text-red-500">{errors.email?.message}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* joining date */}
+        <div className="flex flex-row">
+          <label className="text-sm font-medium mb-1 w-4/12">
+            Joining Date<span className="text-red-500"> *</span>
+          </label>
+          <div className="w-full">
+            <Controller
+              name="joiningDate"
+              control={control}
+              render={({ field }) => (
+                <DatePicker
+                  value={field.value ? dayjs(field.value) : null}
+                  onChange={(date) =>
+                    field.onChange(date ? date.format("YYYY-MM-DD") : "")
+                  }
+                  placeholder="Select Joining Date"
+                  status={errors.joiningDate ? "error" : ""}
+                  className="h-10 w-full"
+                />
+              )}
+            />
+            <div className="h-5">
+              <p className="text-sm text-red-500">
+                {errors.joiningDate?.message}
               </p>
             </div>
           </div>
-        }
-      >
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-1">
-          <div className="flex flex-row">
-            <label className="text-sm font-medium mb-1 w-4/12">
-              Name<span className="text-red-500"> *</span>
-            </label>
-            <div className="w-full">
-              <Controller
-                name="name"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="e.g. Jane"
-                    status={errors.name ? "error" : ""}
-                    className="h-10"
-                  />
-                )}
-              />
-              <div className="h-5">
-                <p className="text-sm text-red-500">{errors.name?.message}</p>
-              </div>
+        </div>
+
+        {/* salary */}
+        {/* <div className="flex flex-row">
+                  <label className="text-sm font-medium mb-1 w-4/12">
+                    Salary<span className="text-red-500"> *</span>
+                  </label>
+                  <div className="w-full">
+                    <Controller
+                      name="salary"
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          {...field}
+                          placeholder="e.g. Austin"
+                          status={errors.salary ? "error" : ""}
+                          className="h-10"
+                        />
+                      )}
+                    />
+                    <div className="h-5">
+                      <p className="text-sm text-red-500">{errors.salary?.message}</p>
+                    </div>
+                  </div>
+                </div> */}
+
+        {/* departments */}
+        <div className="flex flex-row">
+          <label className="text-sm font-medium mb-1 w-4/12">
+            Department<span className="text-red-500"> *</span>
+          </label>
+          <div className="w-full">
+            <Controller
+              name="department"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  showSearch
+                  options={departmentList}
+                  placeholder="Select Departmetn"
+                  status={errors.department ? "error" : ""}
+                  className="w-full h-10"
+                  size="large"
+                />
+              )}
+            />
+            <div className="h-5">
+              <p className="text-sm text-red-500">{errors.role?.message}</p>
             </div>
           </div>
+        </div>
 
-          {/* Email */}
-          <div className="flex flex-row">
-            <label className="text-sm font-medium mb-1 w-4/12">
-              Email ID<span className="text-red-500"> *</span>
-            </label>
-            <div className="w-full">
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="e.g. 123@example.com"
-                    status={errors.email ? "error" : ""}
-                    className="h-10"
-                  />
-                )}
-              />
-              <div className="h-5">
-                <p className="text-sm text-red-500">{errors.email?.message}</p>
-              </div>
+        {/* roles */}
+        <div className="flex flex-row">
+          <label className="text-sm font-medium mb-1 w-4/12">
+            Role<span className="text-red-500"> *</span>
+          </label>
+          <div className="w-full">
+            <Controller
+              name="role"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  showSearch
+                  options={rolesList}
+                  placeholder="Select Role"
+                  status={errors.role ? "error" : ""}
+                  className="w-full h-10"
+                  size="large"
+                />
+              )}
+            />
+            <div className="h-5">
+              <p className="text-sm text-red-500">{errors.role?.message}</p>
             </div>
           </div>
+        </div>
 
-          {/* joining date */}
-          <div className="flex flex-row">
-            <label className="text-sm font-medium mb-1 w-4/12">
-              Joining Date<span className="text-red-500"> *</span>
-            </label>
-            <div className="w-full">
-              <Controller
-                name="joiningDate"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    value={field.value ? dayjs(field.value) : null}
-                    onChange={(date) =>
-                      field.onChange(date ? date.format("YYYY-MM-DD") : "")
-                    }
-                    placeholder="Select Joining Date"
-                    status={errors.joiningDate ? "error" : ""}
-                    className="h-10 w-full"
-                  />
-                )}
-              />
-              <div className="h-5">
-                <p className="text-sm text-red-500">
-                  {errors.joiningDate?.message}
-                </p>
-              </div>
+        <div className="flex flex-row">
+          <label className="text-sm font-medium mb-1 w-4/12">
+            Role<span className="text-red-500"> *</span>
+          </label>
+          <div className="w-full">
+            <Controller
+              name="status"
+              control={control}
+              render={({ field }) => (
+                <Select
+                  {...field}
+                  showSearch
+                  options={[
+                    { label: "Active", value: "Active" },
+                    { label: "Inactive", value: "Inactive" },
+                  ]}
+                  placeholder="Select Role"
+                  status={errors.status ? "error" : ""}
+                  className="w-full h-10"
+                  size="large"
+                />
+              )}
+            />
+            <div className="h-5">
+              <p className="text-sm text-red-500">{errors.status?.message}</p>
             </div>
           </div>
+        </div>
 
-          {/* salary */}
-          {/* <div className="flex flex-row">
-            <label className="text-sm font-medium mb-1 w-4/12">
-              Salary<span className="text-red-500"> *</span>
-            </label>
-            <div className="w-full">
-              <Controller
-                name="salary"
-                control={control}
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    placeholder="e.g. Austin"
-                    status={errors.salary ? "error" : ""}
-                    className="h-10"
-                  />
-                )}
-              />
-              <div className="h-5">
-                <p className="text-sm text-red-500">{errors.salary?.message}</p>
-              </div>
-            </div>
-          </div> */}
-
-          {/* departments */}
-          <div className="flex flex-row">
-            <label className="text-sm font-medium mb-1 w-4/12">
-              Department<span className="text-red-500"> *</span>
-            </label>
-            <div className="w-full">
-              <Controller
-                name="department"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    showSearch
-                    options={departmentList}
-                    placeholder="Select Departmetn"
-                    status={errors.department ? "error" : ""}
-                    className="w-full h-10"
-                    size="large"
-                  />
-                )}
-              />
-              <div className="h-5">
-                <p className="text-sm text-red-500">{errors.role?.message}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* roles */}
-          <div className="flex flex-row">
-            <label className="text-sm font-medium mb-1 w-4/12">
-              Role<span className="text-red-500"> *</span>
-            </label>
-            <div className="w-full">
-              <Controller
-                name="role"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    showSearch
-                    options={rolesList}
-                    placeholder="Select Role"
-                    status={errors.role ? "error" : ""}
-                    className="w-full h-10"
-                    size="large"
-                  />
-                )}
-              />
-              <div className="h-5">
-                <p className="text-sm text-red-500">{errors.role?.message}</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex flex-row">
-            <label className="text-sm font-medium mb-1 w-4/12">
-              Role<span className="text-red-500"> *</span>
-            </label>
-            <div className="w-full">
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    showSearch
-                    options={[
-                      { label: "Active", value: "Active" },
-                      { label: "Inactive", value: "Inactive" },
-                    ]}
-                    placeholder="Select Role"
-                    status={errors.status ? "error" : ""}
-                    className="w-full h-10"
-                    size="large"
-                  />
-                )}
-              />
-              <div className="h-5">
-                <p className="text-sm text-red-500">{errors.status?.message}</p>
-              </div>
-            </div>
-          </div>
-
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="w-full h-10 bg-theme"
-          >
-            Create Employee
-          </Button>
-        </form>
-      </Modal>
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="large"
+          className="w-full h-10 bg-theme"
+        >
+          Create Employee
+        </Button>
+      </form>
     </>
   );
 };
 
-export default AddEmployee;
+export default UpdateEmployee;
