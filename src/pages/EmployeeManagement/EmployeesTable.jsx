@@ -9,7 +9,11 @@ import Filters from "./Filters";
 
 const EmployeesTable = () => {
   const { employees, loading } = useSelector((state) => state.employees);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [filters, setFilters] = useState({
+    name: "",
+    minId: "",
+    maxId: "",
+  });
 
   const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -17,18 +21,14 @@ const EmployeesTable = () => {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
 
+  useEffect(() => {
+    dispatch(fetchEmployees());
+  }, [dispatch]);
+
   const handleEditDetails = (employee) => {
     setSelectedEmployee(employee);
     setIsEditModalOpen(true);
   };
-
-  const filteredEmployees = employees.filter((emp) =>
-    emp.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  useEffect(() => {
-    dispatch(fetchEmployees());
-  }, [dispatch]);
 
   const handleViewDetails = (employee) => {
     setSelectedEmployee(employee);
@@ -45,6 +45,19 @@ const EmployeesTable = () => {
     setIsViewModalOpen(false);
     setSelectedEmployee(null);
   };
+
+  const filteredEmployees = employees.filter((emp) => {
+    const matchesName = emp.name
+      ?.toString()
+      .toLowerCase()
+      .includes(filters.name?.toString().toLowerCase() || "");
+
+    const matchesMinId = filters.minId ? emp.employeeId >= filters.minId : true;
+
+    const matchesMaxId = filters.maxId ? emp.employeeId <= filters.maxId : true;
+
+    return matchesName && matchesMinId && matchesMaxId;
+  });
 
   const columns = [
     {
@@ -114,7 +127,9 @@ const EmployeesTable = () => {
           <ViewEmployee employee={selectedEmployee} onClose={handleCancel} />
         )}
       </Modal>
-      <Filters onSearch={(query) => setSearchQuery(query)} />
+
+      <Filters onSearch={(newFilters) => setFilters(newFilters)} />
+
       <Table
         columns={columns}
         dataSource={filteredEmployees}
