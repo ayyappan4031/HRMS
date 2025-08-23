@@ -10,7 +10,8 @@ import {
   VideoCameraOutlined,
 } from "@ant-design/icons";
 import { Layout, Menu, theme } from "antd";
-import EmployeesTable from "../pages/EmployeeManagement/EmployeesTable";
+import EmployeeManagement from "../pages/EmployeeManagement/EmployeeManagement";
+import Navbar from "./Navbar";
 const { Header, Content, Footer, Sider } = Layout;
 const siderStyle = {
   overflow: "auto",
@@ -46,7 +47,9 @@ const AppLayout = () => {
         />
       </Sider>
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Header style={{ padding: 0, background: colorBgContainer }}>
+          <Navbar />
+        </Header>
         <Content style={{ margin: "24px 16px 0", overflow: "initial" }}>
           <div
             style={{
@@ -56,7 +59,7 @@ const AppLayout = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <EmployeesTable />
+            <EmployeeManagement />
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
