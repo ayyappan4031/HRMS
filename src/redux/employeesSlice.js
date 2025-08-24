@@ -48,8 +48,21 @@ const employeesSlice = createSlice({
         state.loading = false;
         const localSavedEmployees =
           JSON.parse(localStorage.getItem("employees")) || [];
-        state.employees = [...action.payload, ...localSavedEmployees];
-        localStorage.setItem("employees", JSON.stringify(state.employees));
+
+        const mergedEmployeesMap = {};
+
+        localSavedEmployees.forEach((emp) => {
+          mergedEmployeesMap[emp.employeeId] = emp;
+        });
+
+        action.payload.forEach((emp) => {
+          mergedEmployeesMap[emp.employeeId] = emp;
+        });
+
+        const mergedEmployees = Object.values(mergedEmployeesMap);
+
+        state.employees = mergedEmployees;
+        localStorage.setItem("employees", JSON.stringify(mergedEmployees));
       })
       .addCase(fetchEmployees.rejected, (state, action) => {
         state.loading = false;
