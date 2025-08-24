@@ -212,7 +212,9 @@ const AddEmployee = () => {
                 )}
               />
               <div className="h-5">
-                <p className="text-sm text-red-500">{errors.role?.message}</p>
+                <p className="text-sm text-red-500">
+                  {errors.department?.message}
+                </p>
               </div>
             </div>
           </div>
@@ -246,7 +248,7 @@ const AddEmployee = () => {
 
           <div className="flex flex-row">
             <label className="text-sm font-medium mb-1 w-4/12">
-              Role<span className="text-red-500"> *</span>
+              Status<span className="text-red-500"> *</span>
             </label>
             <div className="w-full">
               <Controller
@@ -260,7 +262,7 @@ const AddEmployee = () => {
                       { label: "Active", value: "Active" },
                       { label: "Inactive", value: "Inactive" },
                     ]}
-                    placeholder="Select Role"
+                    placeholder="Select Status"
                     status={errors.status ? "error" : ""}
                     className="w-full h-10"
                     size="large"
