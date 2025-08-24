@@ -1,12 +1,73 @@
-# React + Vite
+**Employee Management React App**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React application for managing employee data with CRUD operations, API integration, local persistence, and advanced filtering. Built with React, Redux Toolkit, and Ant Design.
 
-Currently, two official plugins are available:
+**_Features_**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Add, update, view, and delete employees.
 
-## Expanding the ESLint configuration
+- Fetch employee data from API and merge with localStorage.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Persist employee data in localStorage for offline edits.
+
+- Filter employees by name, status, and department.
+
+- Sortable and paginated table using Ant Design.
+
+- Modal-based forms for editing/viewing employee data.
+
+- Notifications for success/error actions.
+
+**Getting Started**
+Prerequisites
+
+Node.js >= 18.x
+npm or yarn
+
+**Installation to run locally**
+git clone https://github.com/ayyappan4031/HRMS.git
+cd HRMS
+npm install
+npm run dev
+Open http://localhost:5173/ in your browser.
+
+**Folder Structure**
+HRMS/
+├─ node_modules/
+├─ public/
+├─ src/
+│ ├─ hooks/ # Custom hooks
+│ ├─ pages/ # Page-level components
+│ ├─ redux/ # Redux slices and store setup
+│ ├─ services/ # API service functions
+│ ├─ ui/ # Reusable UI components
+│ ├─ utils/ # Utility functions
+│ ├─ App.css # tailwind import
+│ ├─ App.jsx # Main app component
+│ ├─ index.css
+│ └─ main.jsx # React DOM entry point
+├─ .gitignore
+├─ eslint.config.js
+├─ index.html
+├─ package-lock.json
+├─ package.json
+├─ README.md
+└─ vite.config.js
+
+**State Management**
+
+employeesSlice handles CRUD actions, API fetches, localStorage updates, loading and error states.
+
+API data is merged with local storage using employeeId as a unique key.
+
+**Usage**
+
+Add Employee: Click “Add Employee” button and fill the form.
+
+Edit Employee: Click edit icon (✎) on a row.
+
+View Employee: Click view icon (👤) on a row.
+
+Delete Employee: Click delete icon (🗑) on a row.
+
+Filter Employees: Use the filters above the table (name, status, department).
