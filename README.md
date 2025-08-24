@@ -97,3 +97,10 @@ API data is merged with local storage using employeeId as a unique key.
 **Delete Employee:** Click delete icon (🗑) on a row.
 
 **Filter Employees:** Use the filters above the table (name, status, department).
+
+**Improvements**
+
+**Enhancements** 
+
+- Bulk employees addition, updation and deletion.
+- Export employees data and import employees data.
