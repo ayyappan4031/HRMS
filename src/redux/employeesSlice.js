@@ -38,9 +38,6 @@ const employeesSlice = createSlice({
       }
       localStorage.setItem("employees", JSON.stringify(state.employees));
     },
-    loadFromLocalStorage: (state, action) => {
-      state.employees = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -49,20 +46,22 @@ const employeesSlice = createSlice({
       })
       .addCase(fetchEmployees.fulfilled, (state, action) => {
         state.loading = false;
-        state.employees = action.payload;
+        const localSavedEmployees =
+          JSON.parse(localStorage.getItem("employees")) || [];
+        state.employees = [...action.payload, ...localSavedEmployees];
         localStorage.setItem("employees", JSON.stringify(state.employees));
       })
       .addCase(fetchEmployees.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
+        const localSavedEmployees = localStorage.getItem("employees");
+        if (localSavedEmployees) {
+          state.employees = JSON.parse(localSavedEmployees);
+        }
       });
   },
 });
 
-export const {
-  addEmployee,
-  deleteEmployee,
-  updateEmployee,
-  loadFromLocalStorage,
-} = employeesSlice.actions;
+export const { addEmployee, deleteEmployee, updateEmployee } =
+  employeesSlice.actions;
 export default employeesSlice.reducer;

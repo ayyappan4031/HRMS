@@ -4,11 +4,7 @@ import { FormOutlined, DeleteOutlined, UserOutlined } from "@ant-design/icons";
 import UpdateEmployee from "./UpdateEmployee";
 import ViewEmployee from "./ViewEmployee";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteEmployee,
-  fetchEmployees,
-  loadFromLocalStorage,
-} from "../../redux/employeesSlice";
+import { deleteEmployee, fetchEmployees } from "../../redux/employeesSlice";
 import Filters from "./Filters";
 
 const EmployeesTable = () => {
@@ -29,12 +25,11 @@ const EmployeesTable = () => {
   console.log("selected employee", selectedEmployee);
 
   useEffect(() => {
-    const savedEmployees = localStorage.getItem("employees");
-    if (savedEmployees) {
-      console.log("savedEmployees", savedEmployees);
-      dispatch(loadFromLocalStorage(JSON.parse(savedEmployees)));
-    } else {
+    try {
       dispatch(fetchEmployees());
+    } catch (err) {
+      console.log(err);
+      messageApi.error(err);
     }
   }, [dispatch]);
 
