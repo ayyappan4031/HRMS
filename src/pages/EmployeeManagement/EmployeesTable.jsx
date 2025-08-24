@@ -139,6 +139,7 @@ const EmployeesTable = () => {
         title="Update Employee"
         footer={null}
         centered
+        key={selectedEmployee?.employeeId}
       >
         {selectedEmployee && (
           <UpdateEmployee employee={selectedEmployee} onClose={handleCancel} />
@@ -150,6 +151,7 @@ const EmployeesTable = () => {
         title="View Employee"
         footer={null}
         centered={true}
+        key={selectedEmployee?.employeeId}
       >
         {selectedEmployee && (
           <ViewEmployee employee={selectedEmployee} onClose={handleCancel} />
