@@ -4,26 +4,45 @@ import { FormOutlined, DeleteOutlined, UserOutlined } from "@ant-design/icons";
 import UpdateEmployee from "./UpdateEmployee";
 import ViewEmployee from "./ViewEmployee";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteEmployee, fetchEmployees } from "../../redux/employeesSlice";
+import {
+  deleteEmployee,
+  fetchEmployees,
+  loadFromLocalStorage,
+} from "../../redux/employeesSlice";
 import Filters from "./Filters";
 
 const EmployeesTable = () => {
   const { employees, loading } = useSelector((state) => state.employees);
+
   const [filters, setFilters] = useState({
     name: "",
-    minId: "",
-    maxId: "",
+    status: "",
+    department: "",
   });
-
+  console.log("local storage", localStorage.getItem("employees"));
   const dispatch = useDispatch();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [messageApi, contextHolder] = message.useMessage();
 
+  console.log("selected employee", selectedEmployee);
+
   useEffect(() => {
-    dispatch(fetchEmployees());
+    const savedEmployees = localStorage.getItem("employees");
+    if (savedEmployees) {
+      console.log("savedEmployees", savedEmployees);
+      dispatch(loadFromLocalStorage(JSON.parse(savedEmployees)));
+    } else {
+      dispatch(fetchEmployees());
+    }
   }, [dispatch]);
+
+  useEffect(() => {
+    if (employees.length > 0) {
+      localStorage.setItem("employees", JSON.stringify(employees));
+    }
+  }, [employees]);
 
   const handleEditDetails = (employee) => {
     setSelectedEmployee(employee);
@@ -52,11 +71,13 @@ const EmployeesTable = () => {
       .toLowerCase()
       .includes(filters.name?.toString().toLowerCase() || "");
 
-    const matchesMinId = filters.minId ? emp.employeeId >= filters.minId : true;
+    const matchesStatus = filters.status ? emp.status === filters.status : true;
 
-    const matchesMaxId = filters.maxId ? emp.employeeId <= filters.maxId : true;
+    const matchesDepartment = filters.department
+      ? emp.department === filters.department
+      : true;
 
-    return matchesName && matchesMinId && matchesMaxId;
+    return matchesName && matchesStatus && matchesDepartment;
   });
 
   const columns = [
@@ -79,9 +100,21 @@ const EmployeesTable = () => {
       width: 150,
       dataIndex: "department",
       key: "department",
+      sorter: (a, b) => a.department.localeCompare(b.department),
     },
-    { title: "Role", width: 150, dataIndex: "role", key: "role" },
-    { title: "Status", width: 150, dataIndex: "status", key: "status" },
+    {
+      title: "Role",
+      width: 150,
+      dataIndex: "role",
+      key: "role",
+    },
+    {
+      title: "Status",
+      width: 150,
+      dataIndex: "status",
+      key: "status",
+      sorter: (a, b) => a.status.localeCompare(b.status),
+    },
     {
       title: "Action",
       width: 150,

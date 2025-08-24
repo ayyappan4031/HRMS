@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import { useDispatch } from "react-redux";
 import { addEmployee } from "../../redux/employeesSlice";
 import { v4 as uuidv4 } from "uuid";
+import useLocalStorage from "../../hooks/useLocalStorate";
 
 const addEmployeeSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -26,7 +27,7 @@ const AddEmployee = () => {
   const dispatch = useDispatch();
   const [isModelOpen, setIsModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
-
+  const [employees, setEmployees] = useLocalStorage("employees", []);
   const {
     handleSubmit,
     control,
@@ -59,6 +60,7 @@ const AddEmployee = () => {
     dispatch(addEmployee(newEmployee));
     setIsModalOpen(false);
     reset();
+    setEmployees([...employees, newEmployee]);
     messageApi.success("Employee added successfully!");
   };
   return (
