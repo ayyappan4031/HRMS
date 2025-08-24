@@ -37,6 +37,7 @@ npm run dev
 Open http://localhost:5173/ in your browser.
 
 **Folder Structure**
+
 HRMS/
 
 ├─ node_modules/
