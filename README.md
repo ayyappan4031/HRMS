@@ -26,9 +26,13 @@ npm or yarn
 
 **Installation to run locally**
 git clone https://github.com/ayyappan4031/HRMS.git
+
 cd HRMS
+
 npm install
+
 npm run dev
+
 Open http://localhost:5173/ in your browser.
 
 **Folder Structure**
