@@ -27,7 +27,7 @@ const AppLayout = () => {
   } = theme.useToken();
   return (
     <Layout hasSider>
-      <Sider style={siderStyle}>
+      <Sider style={siderStyle} breakpoint="lg" collapsedWidth="1">
         <div className="demo-logo-vertical" />
         <Menu
           theme="dark"

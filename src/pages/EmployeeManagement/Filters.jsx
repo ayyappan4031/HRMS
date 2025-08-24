@@ -28,8 +28,9 @@ const Filters = ({ onSearch }) => {
   };
 
   return (
-    <div className="flex flex-row items-center p-4 gap-4">
+    <div className="flex md:flex-row items-center p-4 gap-4 flex-col">
       <Input
+        className="text-left"
         placeholder="Search by name"
         name="name"
         value={filters.name}
@@ -38,6 +39,7 @@ const Filters = ({ onSearch }) => {
       />
       <Select
         placeholder="Filter by Status"
+        className="text-left"
         name="status"
         value={filters.status ?? undefined}
         options={[
@@ -49,6 +51,7 @@ const Filters = ({ onSearch }) => {
         allowClear
       />
       <Select
+        className="text-left"
         placeholder="Filter by Department"
         name="department"
         value={filters.department ?? undefined}
@@ -58,7 +61,11 @@ const Filters = ({ onSearch }) => {
         allowClear
       />
 
-      <Button type="primary" onClick={handleClear}>
+      <Button
+        className="w-[200px] md:w-max"
+        type="primary"
+        onClick={handleClear}
+      >
         Clear
       </Button>
     </div>

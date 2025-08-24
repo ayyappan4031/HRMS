@@ -67,7 +67,12 @@ const AddEmployee = () => {
     <>
       {/* contextholder is used for antd toadst message renders */}
       {contextHolder}
-      <Button type="primary" size="medium" onClick={onAddEmployee}>
+      <Button
+        className=" w-[200px] md:w-max"
+        type="primary"
+        size="medium"
+        onClick={onAddEmployee}
+      >
         Add Employee
       </Button>
       <Modal
