@@ -179,6 +179,15 @@ export const employeesList = [
     role: "Sales Executive",
     status: "Inactive",
   },
+  {
+    employeeId: "0021",
+    name: "Acer Adams",
+    email: "acer.adams@example.com",
+    joiningDate: "2025-08-28",
+    department: "Sales",
+    role: "Sales Executive",
+    status: "Active",
+  },
 ];
 
 export const getEmployees = async () => {
